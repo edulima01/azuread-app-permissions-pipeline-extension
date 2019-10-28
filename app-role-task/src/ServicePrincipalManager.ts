@@ -7,7 +7,7 @@ export class ServicePrincipalManager {
     private graphApiClient: Client;
     constructor(private servicePrincipalClientId: string, private debugLogger?: (message: string) => void) {
         this.graphApiClient = Client.initWithMiddleware({
-            authProvider: new AzureTaskAuthenticatorProvider()
+            authProvider: new AzureTaskAuthenticatorProvider(this.debugLogger)
         });
     }
 
