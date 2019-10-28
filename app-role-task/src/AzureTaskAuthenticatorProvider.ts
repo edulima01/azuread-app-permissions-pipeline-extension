@@ -1,7 +1,7 @@
 import axios, { AxiosResponse, AxiosError, AxiosRequestConfig } from 'axios';
 import tl from 'azure-pipelines-task-lib/task';
 import { AxiosInstance } from 'axios';
-import qs = require('qs');
+import qs from 'qs';
 import { AuthenticationProvider, AuthenticationProviderOptions } from '@microsoft/microsoft-graph-client';
 
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -12,6 +12,12 @@ interface TokenResponse {
     access_token: string;
 }
 
+export interface ServiceProvider {
+    clientId: string,
+    clientSecret: string,
+    tenantId: string
+}
+
 export class AzureTaskAuthenticatorProvider implements AuthenticationProvider {
     private axiosClient: AxiosInstance;
     private token: any;
@@ -19,7 +25,7 @@ export class AzureTaskAuthenticatorProvider implements AuthenticationProvider {
         scopes: [ "https://graph.microsoft.com/.default" ]
     };
 
-    constructor(private debugLogger?: (message: string) => void) {
+    constructor(private serviceProvider: ServiceProvider, private debugLogger?: (message: string) => void) {
         this.axiosClient = axios.create();
     }
 
@@ -27,26 +33,14 @@ export class AzureTaskAuthenticatorProvider implements AuthenticationProvider {
         this.log("Starting getToken");
         const scopesChanged = this.scopesChanged(authenticationProviderOptions);
         if (!this.token || this.isExpired() || scopesChanged) {
-            this.log("getting service name");
-            const serviceNameInput: string | undefined = tl.getInput("environmentServiceName", true);
-            const serviceName: string = serviceNameInput ? serviceNameInput : "";
-    
-            this.log("getting client id");
-            const clientId = tl.getEndpointAuthorizationParameter(serviceName, "serviceprincipalid", false);
-            this.log("getting client secret");
-            const clientSecret = tl.getEndpointAuthorizationParameter(serviceName, "serviceprincipalkey", false);
-            this.log("getting tenant id");
-            const tenantId = tl.getEndpointAuthorizationParameter(serviceName, "tenantid", false);
-            const tokenEndpoint = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
-    
             this.log("scopes: " + this.authenticationProviderOptions.scopes.join(" "));
             const postData = {
-                client_id: clientId,
+                client_id: this.serviceProvider.clientId,
                 scope: this.authenticationProviderOptions.scopes.join(" "),
-                client_secret: clientSecret,
+                client_secret: this.serviceProvider.clientSecret,
                 grant_type: 'client_credentials'
             };
-            this.token = (await this.axiosClient.post<TokenResponse>(tokenEndpoint, qs.stringify(postData))).data.access_token;
+            this.token = (await this.axiosClient.post<TokenResponse>(`https://login.microsoftonline.com/${this.serviceProvider.tenantId}/oauth2/v2.0/token`, qs.stringify(postData))).data.access_token;
             this.log("access_token: " + this.token);
         }
         this.log("Finished get token");

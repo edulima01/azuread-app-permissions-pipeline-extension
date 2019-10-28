@@ -1,13 +1,13 @@
 import { AppRole } from '@microsoft/microsoft-graph-types-beta';
 import { Client, GraphRequest } from '@microsoft/microsoft-graph-client';
-import { AzureTaskAuthenticatorProvider } from './AzureTaskAuthenticatorProvider';
+import { AzureTaskAuthenticatorProvider, ServiceProvider } from './AzureTaskAuthenticatorProvider';
 import 'isomorphic-fetch';
 
 export class ServicePrincipalManager {
     private graphApiClient: Client;
-    constructor(private servicePrincipalClientId: string, private debugLogger?: (message: string) => void) {
+    constructor(serviceProvider: ServiceProvider, private servicePrincipalClientId: string, private debugLogger?: (message: string) => void) {
         this.graphApiClient = Client.initWithMiddleware({
-            authProvider: new AzureTaskAuthenticatorProvider(this.debugLogger)
+            authProvider: new AzureTaskAuthenticatorProvider(serviceProvider, this.debugLogger)
         });
     }
 

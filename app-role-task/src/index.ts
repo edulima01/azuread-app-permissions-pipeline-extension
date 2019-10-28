@@ -2,6 +2,7 @@ import tl = require('azure-pipelines-task-lib/task');
 import { AppRole } from "@microsoft/microsoft-graph-types-beta";
 import { ServicePrincipalManager } from './ServicePrincipalManager';
 import { v4 } from 'uuid';
+import { ServiceProvider } from './AzureTaskAuthenticatorProvider';
 
 async function run() {
     try {
@@ -10,11 +11,11 @@ async function run() {
         switch(command) {
             case 'upsert':
                 tl.debug("doing upsert");
-                await new ServicePrincipalManager(servicePrincipalId, (msg) => tl.debug(msg)).guaranteeTheAppRoleExists(createFromInput());
+                await new ServicePrincipalManager(createServiceProvider(), servicePrincipalId, (msg) => tl.debug(msg)).guaranteeTheAppRoleExists(createFromInput());
                 break;
             case 'delete':
                 tl.debug("doing delete");
-                await new ServicePrincipalManager(servicePrincipalId, (msg) => tl.debug(msg)).guaranteeTheAppRoleDoesntExists(getAndValidateInput("value"));
+                await new ServicePrincipalManager(createServiceProvider(), servicePrincipalId, (msg) => tl.debug(msg)).guaranteeTheAppRoleDoesntExists(getAndValidateInput("value"));
                 break;
             default:
                 throw new Error(`Could not understand command ${command}.`);
@@ -23,6 +24,21 @@ async function run() {
     catch (err) {
         tl.setResult(tl.TaskResult.Failed, err.message);
     }
+}
+
+function createServiceProvider(): ServiceProvider {
+    tl.debug("getting service name");
+    const serviceName: string = <string>tl.getInput("environmentServiceName", true);
+
+    tl.debug("getting client id");
+    const clientId = <string>tl.getEndpointAuthorizationParameter(serviceName, "serviceprincipalid", false);
+    tl.debug("getting client secret");
+    const clientSecret = <string>tl.getEndpointAuthorizationParameter(serviceName, "serviceprincipalkey", false);
+    tl.debug("getting tenant id");
+    const tenantId = <string>tl.getEndpointAuthorizationParameter(serviceName, "tenantid", false);
+    return {
+        clientId, clientSecret, tenantId
+    };
 }
 
 function createFromInput(): AppRole {
