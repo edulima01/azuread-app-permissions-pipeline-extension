@@ -5,7 +5,6 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- 
 - task: azuread-app-role-task@0
   inputs:
     samplestring: 'Human'
