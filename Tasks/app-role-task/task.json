@@ -2,32 +2,94 @@
   "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
   "id": "4ecdcc70-9f14-4df8-862a-2633174b6675",
   "name": "azuread-app-role-task",
-  "friendlyName": "manage app roles into an (already existing) App Registration",
-  "description": "Use this task to maintain app roles to an existing Azure AD App Registration",
-  "helpMarkDown": "",
-  "category": "Utility",
+  "friendlyName": "Manage app permissions of an App Registration",
+  "description": "Use this task to maintain app roles of an existing Azure AD App Registration",
+  "helpMarkDown": "Only App Roles are allowed for now",
+  "category": "Azure Pipelines",
   "author": "eduardo.lima@dtidigital.com.br",
   "version": {
     "Major": 0,
     "Minor": 1,
-    "Patch": 2
+    "Patch": 8
   },
   "instanceNameFormat": "Echo azuread-app-role-task",
-  "inputs": [
+  "groups": [
     {
-      "name": "samplestring",
-      "type": "string",
-      "label": "Sample String",
-      "defaultValue": "",
-      "required": true,
-      "helpMarkDown": "A sample string"
-    },
+      "displayName": "App Role properties",
+      "isExpanded": false,
+      "name": "appRoleProperties"
+    }
+  ],
+  "inputs": [
     {
       "name": "environmentServiceName",
       "type": "connectedService:AzureRM",
       "label": "Environment Azure Subscription",
       "required": true,
-      "helpMarkDown": "Select an Azure resource manager subscription for accessing the Graph API"
+      "helpMarkDown": "Select an Azure resource manager subscription which will be used to manage the app roles. This service must have the permissions Application.ReadWrite.OwnedBy or Application.ReadWrite.All on the Microsoft Graph API."
+    },
+    {
+      "name": "servicePrincipalId",
+      "type": "string",
+      "label": "Service Principal client id",
+      "required": true,
+      "helpMarkDown": "The Client ID of the Service Principal which you want to manage app roles for."
+    },
+    {
+      "name": "command",
+      "type": "pickList",
+      "label": "The operation to perform",
+      "options": {
+        "upsert": "Guarantee the App Role exists",
+        "delete": "Guarantee the App Role does not exists"
+      },
+      "required": true,
+      "helpMarkDown": "Choose if you wnat to guarantee that an app role exists, or to guarantee an app role does not exists.",
+      "groupName": "appRoleProperties"
+    },
+    {
+      "name": "value",
+      "type": "string",
+      "label": "App Role value",
+      "required": true,
+      "helpMarkDown": "The value of the app role (this will be sent on tokens and will be used by applications).",
+      "groupName": "appRoleProperties"
+    },
+    {
+      "name": "isEnabled",
+      "type": "boolean",
+      "label": "Is the role enabled?",
+      "required": false,
+      "helpMarkDown": "Whether the app role is enabled or not.",
+      "groupName": "appRoleProperties",
+      "visibleRule": "command = upsert"
+    },
+    {
+      "name": "displayName",
+      "type": "string",
+      "label": "Display Name",
+      "required": true,
+      "helpMarkDown": "The displayName of the app role, which will be displayed in the Azure Portal, for example.",
+      "groupName": "appRoleProperties",
+      "visibleRule": "command = upsert"
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "label": "Description",
+      "required": true,
+      "helpMarkDown": "The description of the app role.",
+      "groupName": "appRoleProperties",
+      "visibleRule": "command = upsert"
+    },
+    {
+      "name": "allowedMemberTypes",
+      "type": "multiLine",
+      "label": "What resources are allowed to this role",
+      "required": true,
+      "helpMarkDown": "What is the audience of this app role. Keep each value on one line. The only acceptable values are 'User' and 'Application'.",
+      "groupName": "appRoleProperties",
+      "visibleRule": "command = upsert"
     }
   ],
   "execution": {

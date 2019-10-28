@@ -1,27 +1,49 @@
 import tl = require('azure-pipelines-task-lib/task');
-import { GraphApiClient} from './graph-api-access/graphApiClient';
+import { AppRole } from "@microsoft/microsoft-graph-types-beta";
+import { ServicePrincipalManager } from './ServicePrincipalManager';
+import { v4 } from 'uuid';
 
 async function run() {
     try {
-        const inputString: string | undefined = tl.getInput('samplestring', true);
-        if (inputString == 'bad') {
-            tl.setResult(tl.TaskResult.Failed, 'Bad input was given');
-            return;
+        const command = tl.getInput("command", true);
+        const servicePrincipalId = <string>tl.getInput("servicePrincipalId", true);
+        switch(command) {
+            case 'upsert':
+                await new ServicePrincipalManager(servicePrincipalId, tl.debug).guaranteeTheAppRoleExists(createFromInput());
+                break;
+            case 'delete':
+                await new ServicePrincipalManager(servicePrincipalId, tl.debug).guaranteeTheAppRoleDoesntExists(getAndValidateInput("value"));
+                break;
+            default:
+                throw new Error(`Could not understand command ${command}.`);
         }
-
-        const serviceNameInput: string | undefined = tl.getInput("environmentServiceName", true);
-        const serviceName: string = serviceNameInput ? serviceNameInput : "";
-
-        const secret = tl.getEndpointAuthorizationParameter(serviceName, "serviceprincipalkey", true);
-        const safeSecret = secret ? secret.length < 4 ? "****" + secret : secret : "*****";
-        console.log('client_id', tl.getEndpointAuthorizationParameter(serviceName, "serviceprincipalid", true));
-        console.log('client_secret', safeSecret.substring(0, 4));
-        console.log('tenant_id', tl.getEndpointAuthorizationParameter(serviceName, "tenantid", true));
-        console.log('Hello', inputString);
     }
     catch (err) {
         tl.setResult(tl.TaskResult.Failed, err.message);
     }
+}
+
+function createFromInput(): AppRole {
+    const allowedMemberTypes = tl.getDelimitedInput("allowedMemberTypes", "\n", true);
+    if (allowedMemberTypes.some(memberType => memberType != "User" && memberType != "Application")) {
+        throw new Error (`The allowedMemberTypes field only supports the values "User" and "Application", but received ${allowedMemberTypes.join(" ")}.`);
+    }
+    return {
+        id: v4(),
+        allowedMemberTypes: allowedMemberTypes,
+        description: tl.getInput("description", true),
+        displayName: getAndValidateInput("displayName"),
+        isEnabled: tl.getBoolInput("isEnabled", true),
+        value: getAndValidateInput("value")
+    };
+}
+
+function getAndValidateInput(inputName: string): string {
+    const inputValue = <string>tl.getInput(inputName, true);
+    if (/\s/.test(inputValue)) {
+        throw new Error(`Property ${inputName} contains white space characters: "${inputValue}"`);
+    }
+    return inputValue;
 }
 
 run();

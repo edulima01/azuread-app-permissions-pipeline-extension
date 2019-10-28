@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "azureadd-app-permissions-pipeline-extension",
   "name": "Manage app roles and oauth permissions in an App Registration",
-  "version": "0.1.3",
+  "version": "0.1.8",
   "publisher": "eduardolima",
   "targets": [
     {
