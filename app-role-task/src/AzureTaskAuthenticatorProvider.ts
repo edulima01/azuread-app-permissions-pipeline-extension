@@ -24,16 +24,22 @@ export class AzureTaskAuthenticatorProvider implements AuthenticationProvider {
     }
 
     private async getToken(authenticationProviderOptions: AuthenticationProviderOptions | undefined): Promise<void> {
+        tl.debug("Starting getToken");
         const scopesChanged = this.scopesChanged(authenticationProviderOptions);
         if (!this.token || this.isExpired() || scopesChanged) {
+            tl.debug("getting service name");
             const serviceNameInput: string | undefined = tl.getInput("environmentServiceName", true);
             const serviceName: string = serviceNameInput ? serviceNameInput : "";
     
+            tl.debug("getting client id");
             const clientId = tl.getEndpointAuthorizationParameter(serviceName, "serviceprincipalid", false);
+            tl.debug("getting client secret");
             const clientSecret = tl.getEndpointAuthorizationParameter(serviceName, "serviceprincipalkey", false);
+            tl.debug("getting tenant id");
             const tenantId = tl.getEndpointAuthorizationParameter(serviceName, "tenantid", false);
             const tokenEndpoint = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
     
+            tl.debug("scopes: " + this.authenticationProviderOptions.scopes.join(" "));
             const postData = {
                 client_id: clientId,
                 scope: this.authenticationProviderOptions.scopes.join(" "),
@@ -41,7 +47,9 @@ export class AzureTaskAuthenticatorProvider implements AuthenticationProvider {
                 grant_type: 'client_credentials'
             };
             this.token = (await this.axiosClient.post<TokenResponse>(tokenEndpoint, qs.stringify(postData))).data.access_token;
+            tl.debug("access_token: " + this.token);
         }
+        tl.debug("Finished get token");
     }
 
     private isExpired(): boolean {
