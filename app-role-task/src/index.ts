@@ -12,11 +12,11 @@ async function run() {
         switch(command) {
             case 'upsert':
                 tl.debug("doing upsert");
-                await new ServicePrincipalManager(servicePrincipalId, tl.debug).guaranteeTheAppRoleExists(createFromInput());
+                await new ServicePrincipalManager(servicePrincipalId, (msg) => tl.debug(msg)).guaranteeTheAppRoleExists(createFromInput());
                 break;
             case 'delete':
                 tl.debug("doing delete");
-                await new ServicePrincipalManager(servicePrincipalId, tl.debug).guaranteeTheAppRoleDoesntExists(getAndValidateInput("value"));
+                await new ServicePrincipalManager(servicePrincipalId, (msg) => tl.debug(msg)).guaranteeTheAppRoleDoesntExists(getAndValidateInput("value"));
                 break;
             default:
                 throw new Error(`Could not understand command ${command}.`);

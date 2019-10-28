@@ -1,6 +1,6 @@
 {
   "name": "azuread-app-permissions-pipeline-extension",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Extensions to set app roles and oauth permissions to an App Registration",
   "main": "index.js",
   "scripts": {
