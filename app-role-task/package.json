@@ -1,0 +1,33 @@
+{
+  "name": "app-role-task",
+  "version": "0.1.1",
+  "description": "This task allows for app roles to be created on a given app registration on Azure",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc --build",
+    "bumpversion": "cross-var node ../version.js -v $npm_package_version && cross-var node ../version.js -v $npm_package_version -d ../Tasks/app-role-task/task.json -p version.Major -p version.Minor -p version.Patch -s",
+    "setversion": "cross-var node ../version.js -v $npm_package_version -i false -d ../Tasks/app-role-task/task.json -p version.Major -p version.Minor -p version.Patch -s",
+    "pack": "npm run build && npm run setversion && copyfiles package.json \"dist/**/*.js\" -e \"dist/tests/*\" ../Tasks/app-role-task && cd ../Tasks/app-role-task && npm install --only=prod && cd ../../app-role-task",
+    "publish": "npm run bumpversion && npm run pack",
+    "start": "npm run build && INPUT_SAMPLESTRING='Human' node dist/index.js"
+  },
+  "author": "eduardo.lima@dtidigital.com.br",
+  "dependencies": {
+    "axios": "^0.19.0",
+    "azure-pipelines-task-lib": "^2.9.3",
+    "jsonwebtoken": "^8.5.1",
+    "qs": "^6.9.0",
+    "tslib": "^1.10.0",
+    "typed-rest-client": "^1.5.0",
+    "typescript": "^3.6.4"
+  },
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/node": "^12.11.7",
+    "@types/q": "^1.5.2",
+    "@types/qs": "^6.5.3",
+    "copyfiles": "^2.1.1",
+    "cross-var": "^1.1.0",
+    "semver": "^6.3.0"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+  "id": "4ecdcc70-9f14-4df8-862a-2633174b6675",
+  "name": "azuread-app-role-task",
+  "friendlyName": "manage app roles into an (already existing) App Registration",
+  "description": "Use this task to maintain app roles to an existing Azure AD App Registration",
+  "helpMarkDown": "",
+  "category": "Utility",
+  "author": "eduardo.lima@dtidigital.com.br",
+  "version": {
+    "Major": 0,
+    "Minor": 1,
+    "Patch": 1
+  },
+  "instanceNameFormat": "Echo azuread-app-role-task",
+  "inputs": [
+    {
+      "name": "samplestring",
+      "type": "string",
+      "label": "Sample String",
+      "defaultValue": "",
+      "required": true,
+      "helpMarkDown": "A sample string"
+    },
+    {
+      "name": "environmentServiceName",
+      "type": "connectedService:AzureRM",
+      "label": "Environment Azure Subscription",
+      "required": true,
+      "helpMarkDown": "Select an Azure resource manager subscription for accessing the Graph API"
+    }
+  ],
+  "execution": {
+    "Node10": {
+      "target": "dist/index.js"
+    }
+  }
+}

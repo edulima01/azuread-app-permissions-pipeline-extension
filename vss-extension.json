@@ -1,0 +1,44 @@
+{
+  "manifestVersion": 1,
+  "id": "azureadd-app-permissions-pipeline-extension",
+  "name": "Manage app roles and oauth permissions in an App Registration",
+  "version": "0.1.1",
+  "publisher": "eduardolima",
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services"
+    }
+  ],
+  "description": "Use this task to maintain app roles and oauth permissions to an existing Azure AD App Registration",
+  "icons": {
+    "default": "vss-extension.png"
+  },
+  "categories": [
+    "Azure Pipelines"
+  ],
+  "files": [
+    {
+      "path": "Tasks/app-role-task"
+    }
+  ],
+  "content": {
+    "details": {
+      "path": "overview.md"
+    }
+  },
+  "galleryFlags": [
+    "Preview"
+  ],
+  "contributions": [
+    {
+      "id": "custom-build-release-task",
+      "type": "ms.vss-distributed-task.task",
+      "targets": [
+        "ms.vss-distributed-task.tasks"
+      ],
+      "properties": {
+        "name": "Tasks/app-role-task"
+      }
+    }
+  ]
+}

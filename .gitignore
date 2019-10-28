@@ -1,0 +1,4 @@
+node_modules/
+dist/
+Tasks/**/package.json
+Tasks/**/package-lock.json
