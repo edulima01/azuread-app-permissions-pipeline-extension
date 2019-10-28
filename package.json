@@ -1,13 +1,13 @@
 {
   "name": "azuread-app-permissions-pipeline-extension",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "description": "Extensions to set app roles and oauth permissions to an App Registration",
   "main": "index.js",
   "scripts": {
     "packtasks": "cd app-role-task && npm run pack",
     "pack": "npm run packtasks && cross-var tfx extension create --manifests vss-extension.json --output-path dist",
     "bumpversion": "cross-var node version.js -v $npm_package_version && cross-var node version.js -v $npm_package_version -d vss-extension.json -p version",
-    "publish": "npm run bumpversion && npm run pack && cross-var tfx extension publish --manifests vss-extension.json --share-with rubix-gav --output-path dist"
+    "publish": "npm run bumpversion && npm run pack && cross-var tfx extension publish --manifests vss-extension.json --share-with rubix-gav edulimavsts --output-path dist"
   },
   "author": "eduardo.lima@dtidigital.com.br",
   "devDependencies": {

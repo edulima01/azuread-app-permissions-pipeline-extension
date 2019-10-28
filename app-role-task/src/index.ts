@@ -9,11 +9,14 @@ async function run() {
             return;
         }
 
-        const secret = tl.getEndpointAuthorizationParameter("environmentServiceName", "serviceprincipalkey", true);
+        const serviceNameInput: string | undefined = tl.getInput("environmentServiceName", true);
+        const serviceName: string = serviceNameInput ? serviceNameInput : "";
+
+        const secret = tl.getEndpointAuthorizationParameter(serviceName, "serviceprincipalkey", true);
         const safeSecret = secret ? secret.length < 4 ? "****" + secret : secret : "*****";
-        console.log('client_id', tl.getEndpointAuthorizationParameter("environmentServiceName", "serviceprincipalid", true));
+        console.log('client_id', tl.getEndpointAuthorizationParameter(serviceName, "serviceprincipalid", true));
         console.log('client_secret', safeSecret.substring(0, 4));
-        console.log('tenant_id', tl.getEndpointAuthorizationParameter("environmentServiceName", "tenantid", true));
+        console.log('tenant_id', tl.getEndpointAuthorizationParameter(serviceName, "tenantid", true));
         console.log('Hello', inputString);
     }
     catch (err) {
