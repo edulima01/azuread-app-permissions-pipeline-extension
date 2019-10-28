@@ -7,5 +7,13 @@ pool:
 steps:
 - task: azuread-app-role-task@0
   inputs:
-    samplestring: 'Human'
     environmentServiceName: 'azuredevops-agent'
+    servicePrincipalId: 'ca9bad25-6abf-4081-b3ec-ae9475156af0'
+    command: 'upsert'
+    value: 'Organization.Read.All'
+    displayName: 'Organization.Read.All'
+    description: 'Can read all organizations'
+    isEnabled: true
+    allowedMemberTypes: |
+      Application
+      User
