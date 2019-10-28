@@ -10,7 +10,7 @@
   "version": {
     "Major": 0,
     "Minor": 1,
-    "Patch": 9
+    "Patch": 10
   },
   "instanceNameFormat": "Echo azuread-app-role-task",
   "groups": [
@@ -56,9 +56,10 @@
       "groupName": "appRoleProperties"
     },
     {
-      "name": "isAppRoleEnabled",
+      "name": "appRoleEnabledFlag",
       "type": "boolean",
       "label": "Is the role enabled?",
+      "defaultValue": "true",
       "required": false,
       "helpMarkDown": "Whether the app role is enabled or not.",
       "groupName": "appRoleProperties",

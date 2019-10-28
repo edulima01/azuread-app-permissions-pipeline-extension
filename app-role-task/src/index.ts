@@ -40,8 +40,8 @@ function createFromInput(): AppRole {
     tl.debug("description: " + description);
     const displayName = tl.getInput("displayName", true);
     tl.debug("displayName: " + displayName);
-    const isAppRoleEnabled = tl.getBoolInput("isAppRoleEnabled", true);
-    tl.debug("isAppRoleEnabled: " + isAppRoleEnabled);
+    const appRoleEnabledFlag = tl.getBoolInput("appRoleEnabledFlag", true);
+    tl.debug("appRoleEnabledFlag: " + appRoleEnabledFlag);
     const value = tl.getInput("value", true);
     tl.debug("value: " + value);
     return {
@@ -49,7 +49,7 @@ function createFromInput(): AppRole {
         allowedMemberTypes: allowedMemberTypes,
         description: tl.getInput("description", true),
         displayName: getAndValidateInput("displayName"),
-        isEnabled: tl.getBoolInput("isEnabled", true),
+        isEnabled: tl.getBoolInput("appRoleEnabledFlag", true),
         value: getAndValidateInput("value")
     };
 }

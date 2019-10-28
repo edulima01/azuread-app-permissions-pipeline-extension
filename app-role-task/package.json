@@ -1,6 +1,6 @@
 {
   "name": "app-role-task",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "This task allows for app roles to be created on a given app registration on Azure",
   "main": "dist/index.js",
   "license": "ISC",
