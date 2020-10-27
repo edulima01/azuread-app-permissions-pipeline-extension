@@ -8,7 +8,7 @@ steps:
 - task: azuread-app-role-task@0
   inputs:
     environmentServiceName: 'azuredevops-agent'
-    servicePrincipalId: 'ca9bad25-6abf-4081-b3ec-ae9475156af0'
+    servicePrincipalId: '44963e67-0ddd-435e-919b-344a976389b0'
     command: 'upsert'
     value: 'Organization.Read.All'
     displayName: 'Organization.Read.All'
