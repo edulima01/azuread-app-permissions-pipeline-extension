@@ -5,15 +5,4 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- task: azuread-app-role-task@0
-  inputs:
-    environmentServiceName: 'azuredevops-agent'
-    servicePrincipalId: '44963e67-0ddd-435e-919b-344a976389b0'
-    command: 'upsert'
-    value: 'Organization.Read.All'
-    displayName: 'Organization.Read.All'
-    description: 'Can read all organizations'
-    isEnabled: true
-    allowedMemberTypes: |
-      Application
-      User
+- script: echo OK
