@@ -14,7 +14,7 @@
     "copyfiles": "^2.1.1",
     "cross-var": "^1.1.0",
     "semver": "^6.3.0",
-    "tfx-cli": "^0.7.9",
+    "tfx-cli": "^0.12.0",
     "yargs": "^14.2.0",
     "minimist": ">=1.2.2"
   },
